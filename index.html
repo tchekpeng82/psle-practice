@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSLE Oral &amp; Listening Practice</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+:root{
+  --ink:#1F2A3D;
+  --paper:#EEF1EA;
+  --card:#FFFFFF;
+  --line:#D9DED2;
+  --accent:#2F6D5E;
+  --accent-soft:#E4EEEA;
+  --amber:#C98A2C;
+  --amber-soft:#FBEDD8;
+  --danger:#B0503C;
+  --danger-soft:#F6E4DE;
+  --muted:#5B6B63;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:'IBM Plex Sans',system-ui,sans-serif;}
+body{padding:14px;}
+.wrap{max-width:640px;margin:0 auto;}
+
+.header{margin-bottom:14px;}
+.header h1{font-size:19px;font-weight:700;margin:0 0 2px;letter-spacing:-0.01em;}
+.header p{margin:0;font-size:13px;color:var(--muted);}
+
+.classbar{display:flex;align-items:center;gap:8px;margin:14px 0 8px;}
+.classbar input{border:1px solid var(--line);background:var(--card);border-radius:6px;padding:6px 9px;font-size:13px;font-family:inherit;color:var(--ink);width:110px;}
+.classbar label{font-size:12px;color:var(--muted);white-space:nowrap;}
+
+.roster{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;-webkit-overflow-scrolling:touch;}
+.roster::-webkit-scrollbar{height:4px;}
+.chip{flex:0 0 auto;display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:6px 12px 6px 6px;cursor:pointer;font-size:13px;font-weight:500;transition:background .15s,border-color .15s;}
+.chip .avatar{width:22px;height:22px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;}
+.chip.active{background:var(--ink);border-color:var(--ink);color:#fff;}
+.chip.active .avatar{background:rgba(255,255,255,.18);color:#fff;}
+.chip.addchip{color:var(--muted);border-style:dashed;}
+
+details.overview{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:14px;}
+details.overview summary{padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;}
+details.overview summary::-webkit-details-marker{display:none;}
+details.overview summary:after{content:'View progress';font-weight:400;color:var(--muted);font-size:12px;}
+details.overview[open] summary:after{content:'Hide';}
+.overview table{width:100%;border-collapse:collapse;font-size:12.5px;}
+.overview td,.overview th{padding:6px 14px;text-align:left;border-top:1px solid var(--line);}
+.overview th{color:var(--muted);font-weight:600;font-size:11.5px;}
+.overview td:not(:first-child),.overview th:not(:first-child){text-align:center;}
+
+.tabs{display:flex;gap:2px;margin-bottom:0;}
+.tab{flex:1;text-align:center;padding:9px 4px;font-size:12.5px;font-weight:600;border:1px solid var(--line);border-bottom:none;border-radius:8px 8px 0 0;background:#E3E7DE;color:var(--muted);cursor:pointer;}
+.tab.active{background:var(--card);color:var(--ink);position:relative;top:1px;}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:0 8px 8px 8px;padding:16px;margin-bottom:16px;}
+
+.paperlabel{font-size:11.5px;color:var(--muted);margin-bottom:2px;}
+.itemnav{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.itemnav .navbtns button{border:1px solid var(--line);background:var(--card);border-radius:6px;padding:5px 9px;font-size:12px;cursor:pointer;color:var(--ink);}
+.itemnav .navbtns button:disabled{opacity:.35;cursor:default;}
+.itemtitle{font-size:15px;font-weight:700;margin:2px 0 10px;}
+
+.passage{font-family:'Source Serif 4',Georgia,serif;font-size:16.5px;line-height:1.65;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin-bottom:14px;}
+
+.timerow{display:flex;gap:20px;justify-content:center;margin:6px 0 14px;}
+.timerblock{text-align:center;}
+.ring{position:relative;width:78px;height:78px;}
+.ring svg{transform:rotate(-90deg);}
+.ring .num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;font-variant-numeric:tabular-nums;}
+.timerblock .lbl{font-size:11px;color:var(--muted);margin-top:4px;}
+
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:16px;}
+.btn{border:none;border-radius:7px;padding:9px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;}
+.btn-primary{background:var(--ink);color:#fff;}
+.btn-accent{background:var(--accent);color:#fff;}
+.btn-ghost{background:var(--card);color:var(--ink);border:1px solid var(--line);}
+.btn:disabled{opacity:.4;cursor:default;}
+
+.sectiontitle{font-size:12.5px;font-weight:700;text-transform:none;color:var(--ink);margin:14px 0 8px;border-top:1px solid var(--line);padding-top:12px;}
+.checklist{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+.checklist label{display:flex;align-items:center;gap:8px;font-size:13.5px;}
+.checklist input{width:16px;height:16px;accent-color:var(--accent);}
+textarea{width:100%;border:1px solid var(--line);border-radius:7px;padding:8px 10px;font-family:inherit;font-size:13px;resize:vertical;min-height:56px;color:var(--ink);}
+
+.scenario-illus{width:100%;height:auto;border:1px solid var(--line);border-radius:8px;margin-bottom:12px;background:#fff;}
+.qlist{display:flex;flex-direction:column;gap:10px;margin-bottom:6px;}
+.qitem{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--paper);}
+.qitem .qtext{font-size:14px;font-weight:600;margin-bottom:6px;}
+.qitem textarea{margin-bottom:6px;}
+.feedback{background:var(--accent-soft);border:1px solid var(--accent);border-radius:7px;padding:9px 11px;font-size:13px;line-height:1.5;margin-top:6px;white-space:pre-wrap;}
+.feedback.loading{color:var(--muted);background:transparent;border-style:dashed;}
+
+.playbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.playbar .count{font-size:12px;color:var(--muted);}
+.mcq{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:10px;background:var(--paper);}
+.mcq .qtext{font-size:14px;font-weight:600;margin-bottom:8px;}
+.opt{display:block;width:100%;text-align:left;border:1px solid var(--line);background:#fff;border-radius:6px;padding:8px 10px;margin-bottom:6px;font-size:13px;cursor:pointer;font-family:inherit;color:var(--ink);}
+.opt.correct{background:var(--accent-soft);border-color:var(--accent);font-weight:600;}
+.opt.wrong{background:var(--danger-soft);border-color:var(--danger);}
+.opt:disabled{cursor:default;}
+.explain{font-size:12.5px;color:var(--muted);margin-top:4px;padding-left:2px;}
+.scriptbox{white-space:pre-wrap;font-family:'Source Serif 4',Georgia,serif;font-size:14.5px;line-height:1.6;background:var(--paper);border:1px dashed var(--line);border-radius:8px;padding:12px 14px;margin-top:10px;}
+.scoreband{text-align:center;font-size:13px;font-weight:600;margin:10px 0;color:var(--accent);}
+
+.savebar{display:flex;justify-content:flex-end;margin-top:4px;}
+.savebar .btn{width:100%;}
+.savedtag{font-size:12px;color:var(--accent);text-align:center;margin-top:6px;font-weight:600;}
+
+details.plans{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:14px;}
+details.plans summary{padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;}
+details.plans summary::-webkit-details-marker{display:none;}
+details.plans summary:after{content:'View plans';font-weight:400;color:var(--muted);font-size:12px;}
+details.plans[open] summary:after{content:'Hide';}
+.plancards{display:flex;gap:10px;padding:0 14px 6px;flex-wrap:wrap;}
+.plancard{flex:1;min-width:150px;border:1px solid var(--line);border-radius:8px;padding:14px;background:var(--paper);}
+.plancard.highlight{border-color:var(--accent);background:var(--accent-soft);}
+.plancard .pname{font-size:13px;font-weight:700;margin-bottom:2px;}
+.plancard .pprice{font-size:20px;font-weight:700;margin-bottom:8px;}
+.plancard .pprice span{font-size:11.5px;font-weight:500;color:var(--muted);}
+.plancard ul{margin:0 0 12px;padding-left:18px;font-size:12.5px;line-height:1.6;color:var(--ink);}
+.plancard button{width:100%;}
+.plannote{font-size:11px;color:var(--muted);padding:0 14px 14px;margin:0;}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+/* ---------- content ---------- */
+const READING = [
+{id:'r1', title:'Saturday Market', text:`Every Saturday morning, I follow my grandmother to the wet market to help her sell kueh. "Wake up, lazybones!" she calls from the kitchen, and I know it is five o'clock already. By the time we set up our little stall, the market is filled with the smell of fried carrot cake and the shouts of vendors calling out their prices. "Two for a dollar, fresh and hot!" my grandmother sings out, and customers gather round almost at once. Last week, an elderly man counted his coins slowly and realised he was short by twenty cents. Without hesitation, my grandmother waved her hand and said, "Never mind, uncle, take it home." I looked at her, surprised. "Why did you do that?" I asked on the way home. She smiled and replied, "One day, you may be the one who is short of coins." I have never forgotten those words.`},
+{id:'r2', title:'The Storm', text:`The sky had turned the colour of wet cement, and within minutes, rain came pouring down in noisy sheets. We had just stepped out for recess when the first crack of thunder sent everyone scrambling for shelter. "Quick, this way!" shouted Mr Tan, waving us towards the covered walkway. In the chaos, I noticed Farah standing alone near the canteen, clutching her injured ankle and unable to run. My heart pounded as I hurried over. "Lean on me," I said, and together, slowly, we made our way to safety. By the time we reached the walkway, we were both soaked from head to toe, but Farah was smiling. "Thank you for not leaving me behind," she said quietly. I shrugged and grinned. "That's what friends are for, isn't it?" Outside, the storm continued to rage, but somehow, it did not seem so frightening any more.`},
+{id:'r3', title:'National Day Rehearsal', text:`"Left, right, left, right — keep your arms straight!" our contingent commander bellowed across the field for what felt like the hundredth time. My legs ached, my throat was parched, and the afternoon sun blazed mercilessly overhead. I glanced at my friend Kai Xin beside me, who mouthed, "Just a bit more." Finally, the music began, and as our formation marched past the mock grandstand, something unexpected happened — a wave of pride washed over me, chasing away all my tiredness. When we finished, our commander actually smiled and said, "Now that is what I call teamwork!" We cheered so loudly that a nearby group of scouts turned to stare. That evening, as I soaked my sore feet at home, my mother asked if the rehearsal had been worth it. I did not even need to think before answering, "Absolutely, Mum. I cannot wait for the real parade."`},
+{id:'r4', title:'The New Neighbour', text:`When the Ibrahim family moved in next door, I noticed their daughter, Aisyah, sitting alone on the staircase every afternoon after school. One day, I finally gathered the courage to say hello. "Hi, I'm Wei Ming. Do you want to play badminton?" She looked up, startled, then broke into a shy smile. "I would love to, but I don't have a racket yet." "No problem," I said, "you can borrow mine!" As we played in the void deck, she told me her family had just moved from Johor Bahru, and she knew nobody in Singapore. "It must be lonely," I said. She nodded, but added, "Not any more, though — not since I met you." From that day on, we became the best of friends, and I learnt that sometimes, the smallest gestures can mean the world to someone new.`}
+];
+
+const SBC = [
+{id:'s1', title:'Recycling Day',
+ svg:`<svg class="scenario-illus" viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="220" fill="#EEF1EA"/><rect x="30" y="150" width="340" height="10" fill="#D9DED2"/><rect x="70" y="80" width="60" height="70" rx="6" fill="#2F6D5E"/><rect x="140" y="80" width="60" height="70" rx="6" fill="#C98A2C"/><rect x="210" y="80" width="60" height="70" rx="6" fill="#5B6B63"/><circle cx="100" cy="70" r="10" fill="#1F2A3D"/><circle cx="170" cy="70" r="10" fill="#1F2A3D"/><circle cx="240" cy="70" r="10" fill="#1F2A3D"/><circle cx="90" cy="130" r="16" fill="#F2C9A0"/><rect x="76" y="146" width="28" height="40" rx="6" fill="#2F6D5E"/><circle cx="290" cy="120" r="16" fill="#F2C9A0"/><rect x="276" y="136" width="28" height="40" rx="6" fill="#C98A2C"/><rect x="250" y="150" width="40" height="26" rx="4" fill="#fff" stroke="#D9DED2"/><rect x="255" y="140" width="30" height="12" rx="2" fill="#B0503C"/></svg>`,
+ questions:[
+  'Describe what you see in this picture.',
+  'Why do you think recycling is important for Singapore?',
+  'Tell me about a time you helped protect the environment.',
+  'What more do you think can be done to encourage people around you to recycle?'
+ ]},
+{id:'s2', title:'Birthday Surprise',
+ svg:`<svg class="scenario-illus" viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="220" fill="#EEF1EA"/><rect x="130" y="120" width="140" height="60" rx="6" fill="#fff" stroke="#D9DED2"/><rect x="170" y="90" width="60" height="35" rx="4" fill="#C98A2C"/><rect x="190" y="80" width="5" height="18" fill="#B0503C"/><circle cx="100" cy="120" r="16" fill="#F2C9A0"/><rect x="86" y="136" width="28" height="44" rx="6" fill="#2F6D5E"/><circle cx="300" cy="120" r="16" fill="#F2C9A0"/><rect x="286" y="136" width="28" height="44" rx="6" fill="#C98A2C"/><circle cx="200" cy="150" r="16" fill="#F2C9A0"/><rect x="186" y="166" width="28" height="20" rx="6" fill="#5B6B63"/><path d="M60 60 L70 80 L50 80 Z" fill="#C98A2C"/><path d="M330 55 L340 75 L320 75 Z" fill="#2F6D5E"/></svg>`,
+ questions:[
+  'Describe what is happening in this picture.',
+  'How do you think the child in the picture is feeling? Why do you say so?',
+  'Tell me about a time you planned a surprise for someone.',
+  'Do you think surprises are always a good idea? Why or why not?'
+ ]},
+{id:'s3', title:'Bus Stop Queue',
+ svg:`<svg class="scenario-illus" viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="220" fill="#EEF1EA"/><rect x="20" y="60" width="360" height="8" fill="#5B6B63"/><rect x="330" y="30" width="14" height="130" fill="#5B6B63"/><rect x="300" y="70" width="90" height="55" rx="4" fill="#fff" stroke="#D9DED2"/><circle cx="90" cy="130" r="14" fill="#F2C9A0"/><rect x="77" y="144" width="26" height="45" rx="6" fill="#2F6D5E"/><rect x="118" y="150" width="20" height="30" rx="3" fill="#C98A2C"/><circle cx="150" cy="128" r="14" fill="#F2C9A0"/><rect x="137" y="142" width="26" height="45" rx="6" fill="#C98A2C"/><circle cx="210" cy="130" r="14" fill="#F2C9A0"/><rect x="197" y="144" width="26" height="45" rx="6" fill="#5B6B63"/></svg>`,
+ questions:[
+  'Describe what you see in this picture.',
+  'Why do you think it is important to give up your seat for others in need?',
+  'Share an experience when you showed kindness to someone you did not know well.',
+  'What can schools do to teach students to be more gracious to others?'
+ ]},
+{id:'s4', title:'Canteen Spill',
+ svg:`<svg class="scenario-illus" viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="220" fill="#EEF1EA"/><rect x="60" y="140" width="280" height="8" fill="#D9DED2"/><circle cx="150" cy="110" r="16" fill="#F2C9A0"/><rect x="136" y="126" width="28" height="40" rx="6" fill="#B0503C"/><ellipse cx="160" cy="150" rx="26" ry="8" fill="#C98A2C" opacity="0.6"/><rect x="145" y="148" width="34" height="6" rx="2" fill="#fff"/><circle cx="240" cy="115" r="16" fill="#F2C9A0"/><rect x="226" y="131" width="28" height="40" rx="6" fill="#2F6D5E"/><circle cx="300" cy="118" r="16" fill="#F2C9A0"/><rect x="286" y="134" width="28" height="40" rx="6" fill="#5B6B63"/></svg>`,
+ questions:[
+  'Describe what is happening in this picture.',
+  'How do you think the student who spilled his food is feeling?',
+  'Tell me about a time you made a mistake in front of others. How did you feel?',
+  'Why is it important to help others when they are in an embarrassing situation?'
+ ]}
+];
+
+const LISTENING = [
+{id:'l1', title:'School Recycling Programme',
+ script:`Good morning, students. Starting this Monday, our school will be launching a new recycling programme called "Green Steps". Every classroom will receive three bins: one for paper, one for plastic, and one for general waste. Class monitors will be responsible for checking that the bins are sorted correctly at the end of each day. The class that collects the most recyclables each month will win a trophy and a pizza party. Miss Wong from the Green Club will visit classrooms this week to explain how to sort waste properly. Remember, every small effort counts towards a cleaner school and a cleaner planet.`,
+ questions:[
+  {q:'What is the name of the new programme?', options:['Clean Sweep','Green Steps','Eco Warriors','Trash Talk'], a:1, e:'The announcement names the programme "Green Steps".'},
+  {q:'How many bins will each classroom receive?', options:['One','Two','Three','Four'], a:2, e:'Each classroom gets three bins: paper, plastic, and general waste.'},
+  {q:'Who is responsible for checking the bins daily?', options:['Miss Wong','The class monitors','The principal','The cleaners'], a:1, e:'Class monitors check that the bins are sorted correctly each day.'},
+  {q:'What will the winning class receive?', options:['A certificate','Extra recess time','A trophy and a pizza party','A day off homework'], a:2, e:'The class that collects the most recyclables wins a trophy and a pizza party.'}
+ ]},
+{id:'l2', title:'Weather Advisory',
+ script:`This is a weather advisory for the next twenty-four hours. The National Environment Agency has forecast thundery showers over most parts of Singapore, especially in the late afternoon between three and six o'clock. Residents are advised to carry an umbrella and avoid outdoor activities during this period. Schools holding sports events today have been informed to move their programmes indoors as a precaution. Motorists are reminded to switch on their headlights during heavy rain and to drive carefully, as roads may become slippery. The weather is expected to improve by tomorrow morning, with generally fair conditions throughout the day.`,
+ questions:[
+  {q:'When are thundery showers most likely to occur?', options:['Early morning','Midday','Late afternoon','Late night'], a:2, e:'Showers are forecast between three and six o\'clock in the late afternoon.'},
+  {q:'What have schools with sports events been told to do?', options:['Cancel the events','Move programmes indoors','Postpone to next week','Shorten the events'], a:1, e:'Schools have been informed to move their programmes indoors as a precaution.'},
+  {q:'What are motorists reminded to do?', options:['Avoid driving completely','Switch on headlights in heavy rain','Take a different route','Reduce their speed to zero'], a:1, e:'Motorists are reminded to switch on their headlights during heavy rain.'},
+  {q:'What is the weather expected to be like tomorrow morning?', options:['Thundery showers','Strong winds','Generally fair','Hazy conditions'], a:2, e:'The weather is expected to improve, with generally fair conditions tomorrow.'}
+ ]},
+{id:'l3', title:'Library Roadshow',
+ script:`Attention all students. The National Library Board will be setting up a roadshow at our school hall this Friday, from ten in the morning until two in the afternoon. Students who sign up for a new library membership on the spot will receive a free bookmark and a chance to spin a prize wheel. There will also be a storytelling session for lower primary students at eleven o'clock, hosted by a guest author. Upper primary students are encouraged to check out the new graphic novel corner, which features over two hundred new titles. Do drop by during your recess or after school to explore what's on offer.`,
+ questions:[
+  {q:'Where will the roadshow be held?', options:['The classroom','The school hall','The library','The canteen'], a:1, e:'The roadshow will be set up at the school hall.'},
+  {q:'What do students get for signing up for membership on the spot?', options:['A free book','A bookmark and a chance to spin a prize wheel','A discount voucher','A library tote bag'], a:1, e:'They receive a free bookmark and a chance to spin a prize wheel.'},
+  {q:'Who is the storytelling session for?', options:['Upper primary students','Teachers','Lower primary students','Parents'], a:2, e:'The storytelling session at eleven o\'clock is for lower primary students.'},
+  {q:'What is featured in the graphic novel corner?', options:['Over two hundred new titles','Only comic strips','Audio books','Board games'], a:0, e:'The graphic novel corner features over two hundred new titles.'}
+ ]}
+];
+
+/* ---------- state ---------- */
+let data = {roster:[], attempts:{}};
+let currentStudent = null;
+let tab = 'reading';
+let idx = {reading:0, sbc:0, listening:0};
+let timerState = {mode:null, remaining:0, handle:null};
+let sbcAnswers = {};
+let sbcFeedback = {};
+let readingChecklist = {};
+let listeningAnswered = {};
+let listeningPlays = 0;
+let listeningRevealed = false;
+let mediaRecorder = null;
+let audioChunks = [];
+let recognition = null;
+let liveTranscript = '';
+let recordingBlobUrl = null;
+let recordingFeedback = null;
+let isRecording = false;
+
+function resetRecording(){
+  isRecording = false;
+  liveTranscript = '';
+  recordingFeedback = null;
+  if(recordingBlobUrl) URL.revokeObjectURL(recordingBlobUrl);
+  recordingBlobUrl = null;
+  try{ if(recognition) recognition.stop(); }catch(e){}
+  try{ if(mediaRecorder && mediaRecorder.state!=='inactive') mediaRecorder.stop(); }catch(e){}
+}
+
+async function startRecording(){
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    audioChunks = [];
+    mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.ondataavailable = e=>{ if(e.data.size>0) audioChunks.push(e.data); };
+    mediaRecorder.onstop = ()=>{
+      const blob = new Blob(audioChunks, {type:'audio/webm'});
+      recordingBlobUrl = URL.createObjectURL(blob);
+      stream.getTracks().forEach(t=>t.stop());
+      render();
+    };
+    mediaRecorder.start();
+    liveTranscript = '';
+    recordingBlobUrl = null;
+    recordingFeedback = null;
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(SR){
+      recognition = new SR();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
+      recognition.onresult = (e)=>{
+        let finalText = '';
+        for(let i=0;i<e.results.length;i++){ if(e.results[i].isFinal) finalText += e.results[i][0].transcript + ' '; }
+        liveTranscript = finalText;
+      };
+      try{ recognition.start(); }catch(e){}
+    }
+    isRecording = true;
+    render();
+  }catch(e){
+    alert('Could not access the microphone. Check your browser and site permissions.');
+  }
+}
+function stopRecording(){
+  isRecording = false;
+  try{ if(mediaRecorder && mediaRecorder.state!=='inactive') mediaRecorder.stop(); }catch(e){}
+  try{ if(recognition) recognition.stop(); }catch(e){}
+  render();
+}
+async function getReadingFeedback(){
+  const el = document.getElementById('readingfeedback');
+  if(!el) return;
+  el.innerHTML = `<div class="feedback loading">Getting feedback...</div>`;
+  const passage = READING[idx.reading].text;
+  const transcript = liveTranscript.trim() || '(no speech was detected — try again in a quieter room, or check the browser supports speech recognition)';
+  try{
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1000,
+        system:`You are a supportive PSLE English Oral examiner. You are given the original passage a Primary 6 student was asked to read aloud, and a speech-to-text transcript of what they actually said while reading it. Compare the two to spot skipped words, repeated words, or filler words (um, uh), which suggest hesitation or misreading. You cannot judge actual pronunciation, tone, or volume from text, so never invent claims about those. Give exactly 3 short, encouraging sentences: 1) what the transcript suggests went well (completeness, flow), 2) any specific words or phrases likely skipped or stumbled on, based on differences between the two texts, 3) one concrete tip for the next attempt. Plain language suitable for a Primary 6 student and their parent. No markdown, no headers.`,
+        messages:[{role:'user', content:`Original passage:\n${passage}\n\nTranscript of the reading:\n${transcript}`}]
+      })
+    });
+    const json = await res.json();
+    const text = (json.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n').trim();
+    recordingFeedback = text || 'Could not get feedback right now.';
+  }catch(err){
+    recordingFeedback = 'Feedback unavailable right now — check the connection and try again.';
+  }
+  render();
+}
+
+async function loadData(){
+  try{
+    const res = await window.storage.get('class-data', false);
+    if(res && res.value) data = JSON.parse(res.value);
+  }catch(e){ /* no saved data yet */ }
+  if(!data.roster || data.roster.length===0){
+    data = {roster:[
+      {id:'st1',name:'Aisha'},{id:'st2',name:'Ben'},{id:'st3',name:'Chen Wei'},{id:'st4',name:'Divya'}
+    ], attempts:{}};
+  }
+  currentStudent = data.roster[0].id;
+  render();
+}
+async function saveData(){
+  try{ await window.storage.set('class-data', JSON.stringify(data), false); }
+  catch(e){ console.error('Storage error', e); }
+}
+
+function addStudent(){
+  const name = prompt('Student name:');
+  if(!name) return;
+  const id = 'st'+Date.now();
+  data.roster.push({id,name:name.trim()});
+  currentStudent = id;
+  saveData(); render();
+}
+
+function attemptsFor(studentId, type){
+  return (data.attempts[studentId]||[]).filter(a=>a.type===type).length;
+}
+function recordAttempt(studentId, type, detail){
+  if(!data.attempts[studentId]) data.attempts[studentId]=[];
+  data.attempts[studentId].push(Object.assign({type, ts:Date.now()}, detail));
+  saveData();
+}
+
+/* ---------- timer ---------- */
+function ringSVG(remaining, total, big){
+  const r = 34, c = 2*Math.PI*r;
+  const frac = total? Math.max(0,remaining/total) : 0;
+  const off = c*(1-frac);
+  const color = remaining<=5 ? 'var(--danger)' : 'var(--amber)';
+  return `<div class="ring"><svg width="78" height="78" viewBox="0 0 78 78">
+    <circle cx="39" cy="39" r="${r}" fill="none" stroke="var(--line)" stroke-width="6"/>
+    <circle cx="39" cy="39" r="${r}" fill="none" stroke="${color}" stroke-width="6" stroke-dasharray="${c}" stroke-dashoffset="${off}" stroke-linecap="round"/>
+  </svg><div class="num">${remaining}s</div></div>`;
+}
+function startTimer(mode, seconds){
+  clearInterval(timerState.handle);
+  timerState = {mode, remaining:seconds, total:seconds, handle:null};
+  timerState.handle = setInterval(()=>{
+    timerState.remaining--;
+    if(timerState.remaining<=0){
+      clearInterval(timerState.handle);
+      timerState.remaining=0;
+    }
+    renderReadingTimer();
+  },1000);
+  renderReadingTimer();
+}
+function resetTimer(){
+  clearInterval(timerState.handle);
+  timerState = {mode:null, remaining:0, total:0, handle:null};
+  renderReadingTimer();
+}
+function renderReadingTimer(){
+  const el = document.getElementById('timerslot');
+  if(!el) return;
+  el.innerHTML = `
+    <div class="timerow">
+      <div class="timerblock">${ringSVG(timerState.mode==='prep'?timerState.remaining:0, 20)}<div class="lbl">Prep (20s)</div></div>
+      <div class="timerblock">${ringSVG(timerState.mode==='read'?timerState.remaining:0, 90)}<div class="lbl">Reading (1:30)</div></div>
+    </div>`;
+}
+
+/* ---------- render ---------- */
+function render(){
+  const app = document.getElementById('app');
+  const student = data.roster.find(s=>s.id===currentStudent) || data.roster[0];
+
+  app.innerHTML = `
+    <div class="header">
+      <h1>PSLE Oral &amp; Listening Practice</h1>
+      <p>Reading Aloud &middot; Stimulus-Based Conversation &middot; Listening Comprehension</p>
+    </div>
+
+    <div class="roster" id="roster"></div>
+
+    <details class="overview" id="overview">
+      <summary>Class progress</summary>
+      <table>
+        <tr><th>Student</th><th>Reading</th><th>Convo</th><th>Listening</th></tr>
+        ${data.roster.map(s=>`<tr><td>${s.name}</td><td>${attemptsFor(s.id,'reading')}</td><td>${attemptsFor(s.id,'sbc')}</td><td>${attemptsFor(s.id,'listening')}</td></tr>`).join('')}
+      </table>
+    </details>
+
+    <details class="plans" id="plans">
+      <summary>Plans &amp; pricing</summary>
+      <div class="plancards">
+        <div class="plancard">
+          <div class="pname">Free</div>
+          <div class="pprice">S$0</div>
+          <ul>
+            <li>1 student profile</li>
+            <li>2 saved attempts per paper</li>
+            <li>Reading Aloud &amp; Listening practice</li>
+          </ul>
+          <button class="btn btn-ghost" disabled>Current plan</button>
+        </div>
+        <div class="plancard highlight">
+          <div class="pname">Class Plan</div>
+          <div class="pprice">S$19<span>/month per class</span></div>
+          <ul>
+            <li>Unlimited students &amp; attempts</li>
+            <li>AI feedback on every Conversation answer</li>
+            <li>Class progress overview</li>
+            <li>New passages added monthly</li>
+          </ul>
+          <button class="btn btn-accent" id="upgradebtn">Upgrade</button>
+        </div>
+      </div>
+      <p class="plannote">For display only — no payment is processed by this tool.</p>
+    </details>
+
+    <div class="tabs">
+      <div class="tab ${tab==='reading'?'active':''}" data-tab="reading">Reading Aloud</div>
+      <div class="tab ${tab==='sbc'?'active':''}" data-tab="sbc">Conversation</div>
+      <div class="tab ${tab==='listening'?'active':''}" data-tab="listening">Listening</div>
+    </div>
+
+    <div class="panel" id="panel"></div>
+  `;
+
+  renderRoster();
+  const upgradeBtn = document.getElementById('upgradebtn');
+  if(upgradeBtn) upgradeBtn.onclick = ()=> alert('This is a demo pricing display — no payment is actually processed.');
+  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+    tab = t.dataset.tab; resetTimer(); resetRecording(); render();
+  }));
+
+  const panel = document.getElementById('panel');
+  if(tab==='reading') panel.innerHTML = readingPanel();
+  if(tab==='sbc') panel.innerHTML = sbcPanel();
+  if(tab==='listening') panel.innerHTML = listeningPanel();
+
+  if(tab==='reading') wireReading(student);
+  if(tab==='sbc') wireSBC(student);
+  if(tab==='listening') wireListening(student);
+}
+
+function renderRoster(){
+  const el = document.getElementById('roster');
+  el.innerHTML = data.roster.map(s=>`
+    <div class="chip ${s.id===currentStudent?'active':''}" data-id="${s.id}">
+      <span class="avatar">${s.name.trim()[0].toUpperCase()}</span>${s.name}
+    </div>`).join('') + `<div class="chip addchip" id="addchip">+ Add</div>`;
+  el.querySelectorAll('.chip[data-id]').forEach(c=>c.addEventListener('click',()=>{
+    currentStudent = c.dataset.id; render();
+  }));
+  document.getElementById('addchip').addEventListener('click', addStudent);
+}
+
+/* ---- Reading Aloud ---- */
+function readingPanel(){
+  const item = READING[idx.reading];
+  return `
+    <div class="itemnav">
+      <div class="paperlabel">Paper 1 &middot; Reading Aloud &middot; passage ${idx.reading+1} of ${READING.length}</div>
+      <div class="navbtns">
+        <button id="rprev" ${idx.reading===0?'disabled':''}>&larr;</button>
+        <button id="rnext" ${idx.reading===READING.length-1?'disabled':''}>&rarr;</button>
+      </div>
+    </div>
+    <div class="itemtitle">${item.title}</div>
+    <div class="passage">${item.text}</div>
+    <div id="timerslot"></div>
+    <div class="btnrow">
+      <button class="btn btn-accent" id="startprep">Start 20s prep</button>
+      <button class="btn btn-primary" id="startread">Start reading (1:30)</button>
+      <button class="btn btn-ghost" id="resettimer">Reset</button>
+    </div>
+    <div class="sectiontitle">Examiner checklist</div>
+    <div class="checklist" id="checklist">
+      ${['Pace was steady, not rushed','Pronunciation was clear','Read with expression / phrasing','Volume was appropriate'].map((label,i)=>`
+        <label><input type="checkbox" data-i="${i}" ${readingChecklist[i]?'checked':''}/> ${label}</label>
+      `).join('')}
+    </div>
+    <div class="sectiontitle">Record &amp; review</div>
+    <div class="btnrow">
+      <button class="btn btn-accent" id="recstart" ${isRecording?'disabled':''}>${isRecording?'Recording…':'Start recording'}</button>
+      <button class="btn btn-ghost" id="recstop" ${!isRecording?'disabled':''}>Stop</button>
+    </div>
+    ${recordingBlobUrl?`
+      <audio controls src="${recordingBlobUrl}" style="width:100%;margin-bottom:10px;"></audio>
+      <div class="btnrow"><button class="btn btn-ghost" id="getreadingfeedback">Get AI feedback on this reading</button></div>
+      <div id="readingfeedback">${recordingFeedback?`<div class="feedback">${recordingFeedback}</div>`:''}</div>
+    `:''}
+    <p style="font-size:11px;color:var(--muted);margin:8px 0 0;">Needs microphone access. Feedback checks what was said, via speech-to-text — it can't judge real pronunciation or tone. The recording plays back only while this page stays open; it isn't saved after a refresh.</p>
+
+    <textarea id="rnotes" placeholder="Notes for this attempt (optional)"></textarea>
+    <div class="savebar"><button class="btn btn-primary" id="rsave">Save attempt for ${studentName()}</button></div>
+    <div id="rsaved"></div>
+  `;
+}
+function studentName(){
+  const s = data.roster.find(s=>s.id===currentStudent);
+  return s ? s.name : '';
+}
+function wireReading(student){
+  document.getElementById('rprev').onclick=()=>{idx.reading--; readingChecklist={}; resetTimer(); resetRecording(); render();};
+  document.getElementById('rnext').onclick=()=>{idx.reading++; readingChecklist={}; resetTimer(); resetRecording(); render();};
+  document.getElementById('startprep').onclick=()=>startTimer('prep',20);
+  document.getElementById('startread').onclick=()=>startTimer('read',90);
+  document.getElementById('resettimer').onclick=resetTimer;
+  renderReadingTimer();
+  document.querySelectorAll('#checklist input').forEach(cb=>cb.addEventListener('change',e=>{
+    readingChecklist[e.target.dataset.i]=e.target.checked;
+  }));
+  document.getElementById('recstart').onclick=startRecording;
+  document.getElementById('recstop').onclick=stopRecording;
+  const fbBtn = document.getElementById('getreadingfeedback');
+  if(fbBtn) fbBtn.onclick = getReadingFeedback;
+  document.getElementById('rsave').onclick=()=>{
+    const notes = document.getElementById('rnotes').value;
+    recordAttempt(currentStudent,'reading',{passage:READING[idx.reading].title, checklist:Object.assign({},readingChecklist), notes});
+    document.getElementById('rsaved').innerHTML = `<div class="savedtag">Saved for ${studentName()}</div>`;
+  };
+}
+
+/* ---- SBC ---- */
+function sbcPanel(){
+  const item = SBC[idx.sbc];
+  return `
+    <div class="itemnav">
+      <div class="paperlabel">Paper 2 &middot; Stimulus-Based Conversation &middot; scenario ${idx.sbc+1} of ${SBC.length}</div>
+      <div class="navbtns">
+        <button id="sprev" ${idx.sbc===0?'disabled':''}>&larr;</button>
+        <button id="snext" ${idx.sbc===SBC.length-1?'disabled':''}>&rarr;</button>
+      </div>
+    </div>
+    <div class="itemtitle">${item.title}</div>
+    ${item.svg}
+    <div class="qlist">
+      ${item.questions.map((q,i)=>`
+        <div class="qitem" data-i="${i}">
+          <div class="qtext">Q${i+1}. ${q}</div>
+          <textarea placeholder="Type ${studentName()}'s answer here" data-ans="${i}">${sbcAnswers[i]||''}</textarea>
+          <button class="btn btn-ghost" data-fb="${i}">Get PSLE-style feedback</button>
+          <div id="fb-${i}">${sbcFeedback[i]?`<div class="feedback">${sbcFeedback[i]}</div>`:''}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="savebar"><button class="btn btn-primary" id="ssave">Save attempt for ${studentName()}</button></div>
+    <div id="ssaved"></div>
+  `;
+}
+function wireSBC(student){
+  document.getElementById('sprev').onclick=()=>{idx.sbc--; sbcAnswers={}; sbcFeedback={}; render();};
+  document.getElementById('snext').onclick=()=>{idx.sbc++; sbcAnswers={}; sbcFeedback={}; render();};
+  document.querySelectorAll('[data-ans]').forEach(t=>t.addEventListener('input',e=>{
+    sbcAnswers[e.target.dataset.ans]=e.target.value;
+  }));
+  document.querySelectorAll('[data-fb]').forEach(b=>b.addEventListener('click', async(e)=>{
+    const i = e.target.dataset.fb;
+    const question = SBC[idx.sbc].questions[i];
+    const answer = sbcAnswers[i] || '';
+    if(!answer.trim()){ alert('Type an answer first.'); return; }
+    document.getElementById('fb-'+i).innerHTML = `<div class="feedback loading">Getting feedback...</div>`;
+    try{
+      const res = await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          model:'claude-sonnet-4-6',
+          max_tokens:1000,
+          system:`You are a supportive PSLE English Oral examiner giving feedback on a Stimulus-Based Conversation answer. Judge against the Point-Reason-Example structure and relevance to the question. Keep feedback to 3 short sentences: 1) what the answer does well, 2) what's missing (e.g. no reason, no example, or off-topic), 3) one concrete way to strengthen it. Warm, plain, encouraging tone suitable for a Primary 6 student. Do not include headers or markdown.`,
+          messages:[{role:'user', content:`Question: ${question}\nStudent's answer: ${answer}`}]
+        })
+      });
+      const json = await res.json();
+      const text = (json.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n').trim();
+      sbcFeedback[i] = text || 'Could not get feedback right now.';
+    }catch(err){
+      sbcFeedback[i] = 'Feedback unavailable right now — check the connection and try again.';
+    }
+    document.getElementById('fb-'+i).innerHTML = `<div class="feedback">${sbcFeedback[i]}</div>`;
+  }));
+  document.getElementById('ssave').onclick=()=>{
+    recordAttempt(currentStudent,'sbc',{scenario:SBC[idx.sbc].title, answered:Object.keys(sbcAnswers).length});
+    document.getElementById('ssaved').innerHTML = `<div class="savedtag">Saved for ${studentName()}</div>`;
+  };
+}
+
+/* ---- Listening ---- */
+function listeningPanel(){
+  const item = LISTENING[idx.listening];
+  const answeredCount = Object.keys(listeningAnswered).length;
+  const total = item.questions.length;
+  let score = 0;
+  item.questions.forEach((q,i)=>{ if(listeningAnswered[i]===q.a) score++; });
+  return `
+    <div class="itemnav">
+      <div class="paperlabel">Listening Comprehension &middot; passage ${idx.listening+1} of ${LISTENING.length}</div>
+      <div class="navbtns">
+        <button id="lprev" ${idx.listening===0?'disabled':''}>&larr;</button>
+        <button id="lnext" ${idx.listening===LISTENING.length-1?'disabled':''}>&rarr;</button>
+      </div>
+    </div>
+    <div class="itemtitle">${item.title}</div>
+    <div class="playbar">
+      <button class="btn btn-accent" id="lplay" ${listeningPlays>=2?'disabled':''}>${listeningPlays===0?'Play recording':'Play again'}</button>
+      <span class="count">${listeningPlays}/2 plays used</span>
+    </div>
+    ${listeningRevealed ? `
+    <div class="qlist">
+      ${item.questions.map((q,i)=>`
+        <div class="mcq">
+          <div class="qtext">${i+1}. ${q.q}</div>
+          ${q.options.map((opt,oi)=>`
+            <button class="opt" data-qi="${i}" data-oi="${oi}" ${listeningAnswered[i]!==undefined?'disabled':''}
+              ${listeningAnswered[i]!==undefined && oi===q.a?'class="opt correct"':''}
+              ${listeningAnswered[i]!==undefined && oi===listeningAnswered[i] && oi!==q.a?'class="opt wrong"':''}
+            >${opt}</button>
+          `).join('')}
+          ${listeningAnswered[i]!==undefined?`<div class="explain">${q.e}</div>`:''}
+        </div>
+      `).join('')}
+    </div>
+    ${answeredCount===total?`
+      <div class="scoreband">Score: ${score} / ${total}</div>
+      <div class="scriptbox">${item.script}</div>
+      <div class="savebar"><button class="btn btn-primary" id="lsave">Save score for ${studentName()}</button></div>
+      <div id="lsaved"></div>
+    `:''}
+    ` : `<p style="font-size:13px;color:var(--muted);">Play the recording to reveal the questions. Just like the real exam, you get up to two plays.</p>`}
+  `;
+}
+function wireListening(student){
+  document.getElementById('lprev').onclick=()=>{idx.listening--; listeningAnswered={}; listeningPlays=0; listeningRevealed=false; window.speechSynthesis.cancel(); render();};
+  document.getElementById('lnext').onclick=()=>{idx.listening++; listeningAnswered={}; listeningPlays=0; listeningRevealed=false; window.speechSynthesis.cancel(); render();};
+  document.getElementById('lplay').onclick=()=>{
+    if(listeningPlays>=2) return;
+    listeningPlays++;
+    listeningRevealed = true;
+    try{
+      const u = new SpeechSynthesisUtterance(LISTENING[idx.listening].script);
+      u.rate = 0.95;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(u);
+    }catch(e){ /* speech synthesis unavailable */ }
+    render();
+  };
+  document.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',e=>{
+    const qi = e.target.dataset.qi, oi = Number(e.target.dataset.oi);
+    listeningAnswered[qi]=oi;
+    render();
+  }));
+  const lsave = document.getElementById('lsave');
+  if(lsave) lsave.onclick=()=>{
+    const item = LISTENING[idx.listening];
+    let score=0; item.questions.forEach((q,i)=>{ if(listeningAnswered[i]===q.a) score++; });
+    recordAttempt(currentStudent,'listening',{passage:item.title, score, total:item.questions.length});
+    document.getElementById('lsaved').innerHTML = `<div class="savedtag">Saved for ${studentName()}</div>`;
+  };
+}
+
+loadData();
+</script>
+</body>
+</html>
